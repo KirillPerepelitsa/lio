@@ -1,4 +1,11 @@
 {
+  "name": "kirillPerepelitsa/lio",
+  "type": "library",
+  "description": "",
+  "authors": [],
+  "bin": [
+    "bin/lio"
+  ],
   "require": {
     "symfony/console": "^4.3",
     "art4/json-api-client": "^0.10.0",
