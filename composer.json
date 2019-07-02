@@ -4,7 +4,7 @@
   "description": "",
   "authors": [],
   "bin": [
-    "bin/console"
+    "bin/lio"
   ],
   "require": {
     "symfony/console": "4.3.2",
