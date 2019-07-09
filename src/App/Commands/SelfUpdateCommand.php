@@ -10,7 +10,9 @@ use Humbug\SelfUpdate\Strategy\GithubStrategy;
 
 class SelfUpdateCommand extends Command
 {
-	const PACKAGE_NAME = 'lamp-io/lio';
+	/** TODO change it lamp-io repos */
+//	const PACKAGE_NAME = 'lamp-io/lio';
+	const PACKAGE_NAME = 'kirill-perepelitsa/lio';
 	const FILE_NAME = 'lio.phar';
 
 	protected static $defaultName = 'self-update';

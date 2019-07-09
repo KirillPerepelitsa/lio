@@ -26,9 +26,15 @@ class Compiler
 	public function compile()
 	{
 		$this->output->writeln('<info>Starting build phar package</info>');
-		$pathToBuild =  $this->getAppRoot() . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR . self::PHAR_NAME;
+		$pathToBuild = $this->getAppRoot() . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR . self::PHAR_NAME;
 		if (file_exists($pathToBuild)) {
 			unlink($pathToBuild);
+		}
+		if (!file_exists($this->getAppRoot() . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR)) {
+			mkdir(
+				$this->getAppRoot() . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR,
+				0744
+			);
 		}
 		$phar = new \Phar(
 			$pathToBuild,
