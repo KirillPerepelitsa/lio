@@ -36,14 +36,14 @@ class AppsNewCommand extends Command
 		$this->setDescription('Creates a new app')
 			->setHelp('Allow you to create app, api reference https://www.lamp.io/api#/apps/appsCreate')
 			->addArgument('organization_id', InputArgument::OPTIONAL, 'The ID(uuid) of the organization this app belongs to. STRING')
-			->addOption('description', 'd', InputOption::VALUE_OPTIONAL, 'A description', 'Default')
-			->addOption(self::HTTPD_CONF_OPTION_NAME, null, InputOption::VALUE_OPTIONAL, 'Path to your httpd.conf', self::HTTPD_CONF_DEFAULT)
-			->addOption('max_replicas', null, InputOption::VALUE_OPTIONAL, 'The maximum number of auto-scaled replicas INT', 1)
-			->addOption('memory', 'm', InputOption::VALUE_OPTIONAL, 'The amount of memory available (example: 1Gi) STRING', '128Mi')
-			->addOption('min_replicas', null, InputOption::VALUE_OPTIONAL, 'The minimum number of auto-scaled replicas INT', 1)
-			->addOption(self::PHP_INI_OPTION_NAME, null, InputOption::VALUE_OPTIONAL, 'Path to your php.ini', self::PHP_INI_DEFAULT)
-			->addOption('replicas', 'r', InputOption::VALUE_OPTIONAL, 'The number current number replicas available. 0 stops app. INT', 1)
-			->addOption('vcpu', null, InputOption::VALUE_OPTIONAL, 'The number of virtual cpu cores available (maximum: 4, minimum: 0.25) FLOAT', 0.25);
+			->addOption('description', 'd', InputOption::VALUE_REQUIRED, 'A description', 'Default')
+			->addOption(self::HTTPD_CONF_OPTION_NAME, null, InputOption::VALUE_REQUIRED, 'Path to your httpd.conf', self::HTTPD_CONF_DEFAULT)
+			->addOption('max_replicas', null, InputOption::VALUE_REQUIRED, 'The maximum number of auto-scaled replicas INT', 1)
+			->addOption('memory', 'm', InputOption::VALUE_REQUIRED, 'The amount of memory available (example: 1Gi) STRING', '128Mi')
+			->addOption('min_replicas', null, InputOption::VALUE_REQUIRED, 'The minimum number of auto-scaled replicas INT', 1)
+			->addOption(self::PHP_INI_OPTION_NAME, null, InputOption::VALUE_REQUIRED, 'Path to your php.ini', self::PHP_INI_DEFAULT)
+			->addOption('replicas', 'r', InputOption::VALUE_REQUIRED, 'The number current number replicas available. 0 stops app. INT', 1)
+			->addOption('vcpu', null, InputOption::VALUE_REQUIRED, 'The number of virtual cpu cores available (maximum: 4, minimum: 0.25) FLOAT', 0.25);
 	}
 
 	/**
@@ -67,7 +67,10 @@ class AppsNewCommand extends Command
 			);
 		} catch (GuzzleException $guzzleException) {
 			$output->writeln($guzzleException->getMessage());
-			die();
+			exit(1);
+		} catch (\InvalidArgumentException $invalidArgumentException) {
+			$output->writeln($invalidArgumentException->getMessage());
+			exit(1);
 		}
 
 		try {
@@ -76,6 +79,7 @@ class AppsNewCommand extends Command
 			$output->writeln('Your new app successfully created, app id: ' . $document->get('data.id'));
 		} catch (ValidationException $e) {
 			$output->writeln($e->getMessage());
+			exit(1);
 		}
 	}
 

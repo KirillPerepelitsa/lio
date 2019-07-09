@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+if (file_exists(dirname(__DIR__, 3) . '/autoload.php')) {
+	require_once dirname(__DIR__, 3) . '/autoload.php';
+} else {
+	require_once dirname(__DIR__) . '/vendor/autoload.php';
+}
+
+use Console\App\Helpers\Compiler;
+
+try {
+	$compiler = new Compiler();
+	$compiler->compile();
+} catch (Exception $exception) {
+	echo PHP_EOL . $exception->getMessage();
+	exit(1);
+}
