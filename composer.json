@@ -15,7 +15,7 @@
     "symfony/finder": "^4.3",
     "padraic/phar-updater": "^1.0.6"
   },
-  "version": "0.0.3",
+  "version": "0.0.4",
   "autoload": {
     "psr-4": {
       "Console\\": "src"

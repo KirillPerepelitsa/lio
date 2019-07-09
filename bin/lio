@@ -14,12 +14,14 @@ use Console\App\Commands\AppsNewCommand;
 use GuzzleHttp\Client;
 use Console\App\Commands\FilesListCommand;
 use Console\App\Commands\SelfUpdateCommand;
+use Console\App\Commands\TestCommand;
 
-$app = new Application('lamp-io/lio', '0.0.3');
+$app = new Application('lamp-io/lio', '0.0.4');
 $app->add(new AppsListCommand(new Client()));
 $app->add(new AppsDescribeCommand(new Client()));
 $app->add(new AppsNewCommand(new Client()));
 $app->add(new AuthCommand());
 $app->add(new FilesListCommand(new Client()));
 $app->add(new SelfUpdateCommand());
+$app->add(new TestCommand());
 $app->run();
