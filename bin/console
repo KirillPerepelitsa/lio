@@ -10,6 +10,7 @@ use Console\App\Commands\AuthCommand;
 use Console\App\Commands\AppsNewCommand;
 use GuzzleHttp\Client;
 use Console\App\Commands\FilesListCommand;
+use Console\App\Commands\FilesUploadCommand;
 
 $app = new Application();
 $app->add(new AppsListCommand(new Client()));
@@ -17,4 +18,5 @@ $app->add(new AppsDescribeCommand(new Client()));
 $app->add(new AppsNewCommand(new Client()));
 $app->add(new AuthCommand());
 $app->add(new FilesListCommand(new Client()));
+$app->add(new FilesUploadCommand(new Client()));
 $app->run();
