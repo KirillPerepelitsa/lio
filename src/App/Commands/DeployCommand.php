@@ -7,6 +7,8 @@ use Art4\JsonApiClient\V1\Document;
 use Console\App\Commands\Apps\AppsNewCommand;
 use Console\App\Deploy\DeployInterface;
 use Console\App\Deploy\Laravel;
+use Console\App\Helpers\ConfigHelper;
+use GuzzleHttp\ClientInterface;
 use InvalidArgumentException;
 use SplFileObject;
 use Exception;
@@ -29,17 +31,24 @@ class DeployCommand extends Command
 		'laravel' => Laravel::class,
 	];
 
-	const LAMP_IO_CONFIG = '.lamp.io';
 
 	/**
 	 * @var array
 	 */
 	protected $config;
 
+	protected $configHelper;
+
 	/**
 	 * @var bool
 	 */
 	protected $isNewApp = true;
+
+	public function __construct(ClientInterface $httpClient, ConfigHelper $configHelper, $name = null)
+	{
+		parent::__construct($httpClient, $name);
+		$this->configHelper = $configHelper;
+	}
 
 	/**
 	 *
@@ -63,11 +72,13 @@ class DeployCommand extends Command
 		try {
 			$deployObject = $this->getDeployObject($input->getOptions(), $input->getArgument('dir'));
 			$appPath = rtrim($input->getArgument('dir'), '/') . DIRECTORY_SEPARATOR;
-			$configFilePath = $appPath . self::LAMP_IO_CONFIG;
-			$this->setUpConfig($configFilePath);
+//			$configFilePath = $appPath . self::LAMP_IO_CONFIG;
+			var_export($this->configHelper->get('app_config', '32'));
+			die();
+//			$this->setUpConfig($configFilePath);
 			$deployObject->isCorrectApp($appPath);
 			$appId = $this->getAppId($output, $input);
-			$this->saveToConfig($configFilePath);
+//			$this->saveToConfig($configFilePath);
 			$deployObject->deployApp($appId, $this->isNewApp);
 			$deployObject->deployDb();
 			$output->writeln('<info>Done, check it out at https://' . $appId . '.lamp.app/</info>');

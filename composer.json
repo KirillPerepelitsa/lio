@@ -15,7 +15,8 @@
     "ext-json": "*",
     "ext-zip": "*",
     "symfony/finder": "^4.3",
-    "padraic/phar-updater": "^1.0.6"
+    "padraic/phar-updater": "^1.0.6",
+    "symfony/yaml": "^4.3"
   },
   "version": "0.1.0",
   "autoload": {

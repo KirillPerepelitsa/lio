@@ -6,6 +6,7 @@ if (file_exists(dirname(__DIR__, 3) . '/autoload.php')) {
 	require_once dirname(__DIR__) . '/vendor/autoload.php';
 }
 
+use Console\App\Helpers\ConfigHelper;
 use Symfony\Component\Console\Application;
 use Console\App\Commands\Apps\AppsDescribeCommand;
 use Console\App\Commands\Apps\AppsListCommand;
@@ -37,6 +38,7 @@ use Console\App\Commands\Databases\DatabasesListCommand;
 use Console\App\Commands\Databases\DatabasesUpdateCommand;
 use Console\App\Commands\AppRuns\AppRunsListCommand;
 use Console\App\Commands\AppRuns\AppRunsDeleteCommand;
+use Symfony\Component\Yaml\Yaml;
 
 try {
 	$app = new Application();
@@ -59,7 +61,7 @@ try {
 	$app->add(new AppBackupsDescribeCommand(new Client()));
 	$app->add(new AppBackupsDownloadCommand(new Client()));
 	$app->add(new AppBackupsDeleteCommand(new Client()));
-	$app->add(new DeployCommand(new Client()));
+	$app->add(new DeployCommand(new Client(), new ConfigHelper()));
 	$app->add(new AppRunsNewCommand(new Client()));
 	$app->add(new AppRunsDescribeCommand(new Client()));
 	$app->add(new FilesUpdateUnarchiveCommand(new Client()));
