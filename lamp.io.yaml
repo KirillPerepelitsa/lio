@@ -3,7 +3,5 @@ release: ''
 app_type: ''
 
 app_config:
-    id: ''
+    id: 'test'
     description: ''
-
-

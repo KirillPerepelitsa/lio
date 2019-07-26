@@ -61,7 +61,7 @@ try {
 	$app->add(new AppBackupsDescribeCommand(new Client()));
 	$app->add(new AppBackupsDownloadCommand(new Client()));
 	$app->add(new AppBackupsDeleteCommand(new Client()));
-	$app->add(new DeployCommand(new Client(), new ConfigHelper()));
+	$app->add(new DeployCommand(new Client()));
 	$app->add(new AppRunsNewCommand(new Client()));
 	$app->add(new AppRunsDescribeCommand(new Client()));
 	$app->add(new FilesUpdateUnarchiveCommand(new Client()));

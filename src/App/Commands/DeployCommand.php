@@ -31,12 +31,9 @@ class DeployCommand extends Command
 		'laravel' => Laravel::class,
 	];
 
-
 	/**
-	 * @var array
+	 * @var ConfigHelper
 	 */
-	protected $config;
-
 	protected $configHelper;
 
 	/**
@@ -44,10 +41,9 @@ class DeployCommand extends Command
 	 */
 	protected $isNewApp = true;
 
-	public function __construct(ClientInterface $httpClient, ConfigHelper $configHelper, $name = null)
+	public function __construct(ClientInterface $httpClient, $name = null)
 	{
 		parent::__construct($httpClient, $name);
-		$this->configHelper = $configHelper;
 	}
 
 	/**
@@ -70,13 +66,11 @@ class DeployCommand extends Command
 	{
 		parent::execute($input, $output);
 		try {
-			$deployObject = $this->getDeployObject($input->getOptions(), $input->getArgument('dir'));
 			$appPath = rtrim($input->getArgument('dir'), '/') . DIRECTORY_SEPARATOR;
-//			$configFilePath = $appPath . self::LAMP_IO_CONFIG;
-			var_export($this->configHelper->get('app_config', '32'));
-			die();
-//			$this->setUpConfig($configFilePath);
+			$this->configHelper = new ConfigHelper($appPath);
+ 			$deployObject = $this->getDeployObject($input->getOptions(), $appPath);
 			$deployObject->isCorrectApp($appPath);
+
 			$appId = $this->getAppId($output, $input);
 //			$this->saveToConfig($configFilePath);
 			$deployObject->deployApp($appId, $this->isNewApp);
@@ -111,9 +105,9 @@ class DeployCommand extends Command
 	 */
 	protected function getAppId(OutputInterface $output, InputInterface $input): string
 	{
-		if (!empty($this->config['app_id'])) {
+		if (!empty($this->configHelper->get('app_config', 'id'))) {
 			$this->isNewApp = false;
-			return $this->config['app_id'];
+			return $this->configHelper->get('app_config', 'id');
 		}
 
 		$questionHelper = $this->getHelper('question');
@@ -197,7 +191,7 @@ class DeployCommand extends Command
 		foreach ($options as $optionKey => $option) {
 			if ($option && array_key_exists($optionKey, self::DEPLOYS)) {
 				$deployClass = (self::DEPLOYS[$optionKey]);
-				return new $deployClass(rtrim($appDir, '/'), $this->getApplication());
+				return new $deployClass($appDir, $this->getApplication());
 			}
 		}
 		throw new InvalidArgumentException('App type for deployment, not specified, apps allowed ' . implode(',', array_keys(self::DEPLOYS)));
