@@ -91,6 +91,7 @@ class DeployCommand extends Command
 			$this->configHelper->save();
 			$deployObject = $this->getDeployObject();
 			$deployObject->deployApp($appPath, $this->isFirstDeploy());
+			$deployObject->deleteOldReleases();
 			$output->writeln('<info>Done, check it out at https://' . $appId . '.lamp.app/</info>');
 		} catch (Exception $exception) {
 			$output->writeln('<error>' . trim($exception->getMessage()) . '</error>');

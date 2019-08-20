@@ -31,6 +31,8 @@ abstract class DeployAbstract implements DeployInterface
 
 	const SQL_DUMP_NAME = 'dump.sql';
 
+	const KEEP_OLD_RELEASES = 10;
+
 	/**
 	 * @var string
 	 */
@@ -67,6 +69,11 @@ abstract class DeployAbstract implements DeployInterface
 		$this->application = $application;
 		$this->consoleOutput = new ConsoleOutput();
 		$this->config = $config;
+	}
+
+	public function deleteOldReleases()
+	{
+
 	}
 
 	/**

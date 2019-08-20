@@ -4,7 +4,6 @@ namespace Console\App\Deploy;
 
 interface DeployInterface
 {
-
 	/**
 	 * @param string $appPath
 	 * @param bool $isFirstDeploy
@@ -23,4 +22,6 @@ interface DeployInterface
 	 * @return void
 	 */
 	public function revert(string $currentRelease, string $previousRelease);
+
+	public function deleteOldReleases();
 }
