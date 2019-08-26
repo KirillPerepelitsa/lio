@@ -34,6 +34,9 @@ class DeployHelper
 			case 'laravel':
 				$composerJson = json_decode(file_get_contents($appPath . 'composer.json'), true);
 				return array_key_exists('laravel/framework', $composerJson['require']);
+			case 'symfony':
+				/** TODO add here checking */
+				return true;
 			default:
 				return false;
 		}

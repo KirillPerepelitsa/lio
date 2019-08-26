@@ -9,6 +9,7 @@ use Console\App\Commands\Apps\AppsNewCommand;
 use Console\App\Commands\Databases\DatabasesDescribeCommand;
 use Console\App\Deploy\DeployInterface;
 use Console\App\Deploy\Laravel;
+use Console\App\Deploy\Symfony;
 use Console\App\Helpers\ConfigHelper;
 use Console\App\Helpers\DeployHelper;
 use Console\App\Helpers\PasswordHelper;
@@ -36,6 +37,7 @@ class DeployCommand extends Command
 
 	const DEPLOYS = [
 		'laravel' => Laravel::class,
+		'symfony' => Symfony::class,
 	];
 
 	const DEFAULT_RELEASE_RETAIN = 10;
@@ -65,7 +67,8 @@ class DeployCommand extends Command
 	{
 		$this->setDescription('Deploy your app.')
 			->addArgument('dir', InputArgument::OPTIONAL, 'Path to a directory of your application, default value current working directory', getcwd())
-			->addOption('laravel', null, InputOption::VALUE_NONE, 'Deploy laravel app');
+			->addOption('laravel', null, InputOption::VALUE_NONE, 'Deploy laravel app')
+			->addOption('symfony', null, InputOption::VALUE_NONE, 'Deploy symfony app');
 	}
 
 	/**
