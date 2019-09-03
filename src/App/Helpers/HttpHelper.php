@@ -44,6 +44,24 @@ class HttpHelper
 	}
 
 	/**
+	 * @param string $headerKey
+	 * @return string
+	 */
+	public function getHeader(string $headerKey): string
+	{
+		return $this->isHeaderExist($headerKey) ? $this->headers[$headerKey] : '';
+	}
+
+	/**
+	 * @param string $headerKey
+	 * @return bool
+	 */
+	public function isHeaderExist(string $headerKey): bool
+	{
+		return !empty($this->headers[$headerKey]);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getDefaultHeaders(): array
@@ -62,4 +80,21 @@ class HttpHelper
 		return $this->client;
 	}
 
+	/**
+	 * @param array $options
+	 * @param array $queryOptions
+	 * @return string
+	 */
+	public function optionsToQuery(array $options, array $queryOptions): string
+	{
+		$query = [];
+		foreach ($options as $optionKey => $option) {
+			if (array_key_exists($optionKey, $queryOptions) && !empty($option)) {
+				$query[$queryOptions[$optionKey]] = $option;
+			} elseif (in_array($optionKey, $queryOptions) && !empty($option)) {
+				$query[$optionKey] = $option;
+			}
+		}
+		return !empty($query) ? '?' . http_build_query($query) : '';
+	}
 }

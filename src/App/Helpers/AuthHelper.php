@@ -8,8 +8,8 @@ class AuthHelper
 
 	/**
 	 * @param string $token
-	 * @throws \RuntimeException
 	 * @return bool|int
+	 * @throws \RuntimeException
 	 */
 	public static function saveToken(string $token)
 	{
@@ -29,7 +29,7 @@ class AuthHelper
 	 */
 	public static function getPathToTokenFolder(): string
 	{
-		return getenv('HOME') . getenv("HOMEDRIVE") . getenv("HOMEPATH") . '/.config/lamp.io/';
+		return getenv('HOME') . getenv("HOMEDRIVE") . getenv("HOMEPATH") . DIRECTORY_SEPARATOR . '.config' . DIRECTORY_SEPARATOR . 'lamp.io' . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -47,6 +47,6 @@ class AuthHelper
 	 */
 	public static function getToken(): string
 	{
-		return (self::isTokenExist()) ? file_get_contents(self::getPathToTokenFolder() . self::TOKEN_FILE_NAME) : '';
+		return (self::isTokenExist()) ? trim(file_get_contents(self::getPathToTokenFolder() . self::TOKEN_FILE_NAME)) : '';
 	}
 }

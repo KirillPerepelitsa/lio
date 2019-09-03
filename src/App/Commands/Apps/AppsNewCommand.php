@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Console\App\Commands;
+namespace Console\App\Commands\Apps;
 
 
 use Art4\JsonApiClient\Exception\ValidationException;
@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Console\App\Commands\Command;
 
 class AppsNewCommand extends Command
 {
@@ -33,6 +34,7 @@ class AppsNewCommand extends Command
 	 */
 	protected function configure()
 	{
+		parent::configure();
 		$this->setDescription('Creates a new app')
 			->setHelp('Allow you to create app, api reference https://www.lamp.io/api#/apps/appsCreate')
 			->addArgument('organization_id', InputArgument::OPTIONAL, 'The ID(uuid) of the organization this app belongs to. STRING')
@@ -43,7 +45,9 @@ class AppsNewCommand extends Command
 			->addOption('min_replicas', null, InputOption::VALUE_REQUIRED, 'The minimum number of auto-scaled replicas INT', 1)
 			->addOption(self::PHP_INI_OPTION_NAME, null, InputOption::VALUE_REQUIRED, 'Path to your php.ini', self::PHP_INI_DEFAULT)
 			->addOption('replicas', 'r', InputOption::VALUE_REQUIRED, 'The number current number replicas available. 0 stops app. INT', 1)
-			->addOption('vcpu', null, InputOption::VALUE_REQUIRED, 'The number of virtual cpu cores available (maximum: 4, minimum: 0.25) FLOAT', 0.25);
+			->addOption('vcpu', null, InputOption::VALUE_REQUIRED, 'The number of virtual cpu cores available (maximum: 4, minimum: 0.25) FLOAT', 0.25)
+			->addOption('github_webhook_secret', null, InputOption::VALUE_REQUIRED, 'Github web-hook secret token', '')
+			->addOption('webhook_run_command', null, InputOption::VALUE_REQUIRED, 'Github web-hook command', '');
 	}
 
 	/**
@@ -65,21 +69,19 @@ class AppsNewCommand extends Command
 					'body'    => $this->getRequestBody($input),
 				]
 			);
+			if (!empty($input->getOption('json'))) {
+				$output->writeln($response->getBody()->getContents());
+			} else {
+				/** @var Document $document */
+				$document = Parser::parseResponseString($response->getBody()->getContents());
+				$output->writeln('Your new app successfully created, app id: ' . $document->get('data.id'));
+			}
 		} catch (GuzzleException $guzzleException) {
 			$output->writeln($guzzleException->getMessage());
-			exit(1);
+			return 1;
 		} catch (\InvalidArgumentException $invalidArgumentException) {
 			$output->writeln($invalidArgumentException->getMessage());
-			exit(1);
-		}
-
-		try {
-			/** @var Document $document */
-			$document = Parser::parseResponseString($response->getBody()->getContents());
-			$output->writeln('Your new app successfully created, app id: ' . $document->get('data.id'));
-		} catch (ValidationException $e) {
-			$output->writeln($e->getMessage());
-			exit(1);
+			return 1;
 		}
 	}
 
@@ -97,14 +99,16 @@ class AppsNewCommand extends Command
 				'attributes' =>
 					array_merge(
 						[
-							'description'  => (string)$input->getOption('description'),
-							'httpd_conf'   => $httpdConfig,
-							'max_replicas' => (int)$input->getOption('max_replicas'),
-							'memory'       => (string)$input->getOption('memory'),
-							'min_replicas' => (int)$input->getOption('min_replicas'),
-							'php_ini'      => $phpConfig,
-							'replicas'     => (int)$input->getOption('replicas'),
-							'vcpu'         => (float)$input->getOption('vcpu'),
+							'description'           => (string)$input->getOption('description'),
+							'httpd_conf'            => $httpdConfig,
+							'max_replicas'          => (int)$input->getOption('max_replicas'),
+							'memory'                => (string)$input->getOption('memory'),
+							'min_replicas'          => (int)$input->getOption('min_replicas'),
+							'php_ini'               => $phpConfig,
+							'replicas'              => (int)$input->getOption('replicas'),
+							'vcpu'                  => (float)$input->getOption('vcpu'),
+							'github_webhook_secret' => (string)$input->getOption('github_webhook_secret'),
+							'webhook_run_command'   => (string)$input->getOption('webhook_run_command'),
 						],
 						!empty($input->getArgument('organization_id')) ? ['organization_id' => (string)$input->getArgument('organization_id')] : []
 					),
