@@ -50,9 +50,17 @@ class DeployCommand extends Command
 	/**
 	 * @var bool
 	 */
-	protected $isAppAlreadyExists = true;
+	protected $isAppAlreadyExists;
 
+	/**
+	 * @var ClientInterface
+	 */
 	protected $httpClient;
+
+	/**
+	 * @var bool
+	 */
+	protected $isNewDbInstance = false;
 
 	public function __construct(ClientInterface $httpClient, $name = null)
 	{
@@ -114,7 +122,7 @@ class DeployCommand extends Command
 				);
 			}
 			$deployObject = $this->getDeployObject();
-			$deployObject->deployApp($appPath, $this->isFirstDeploy());
+			$deployObject->deployApp($appPath, $this->isFirstDeploy(), $this->isNewDbInstance);
 			if (!empty($this->configHelper->get('app.attributes.hostname'))) {
 				$url = 'https://' . $this->configHelper->get('app.attributes.hostname') . '/';
 			} else {
@@ -189,6 +197,7 @@ class DeployCommand extends Command
 		$dbId = $this->getLampIoDatabaseId($appId);
 		if (empty($dbId)) {
 			$dbId = $this->createLampIoDatabase($output, $input, $appId);
+			$this->isNewDbInstance = true;
 		}
 		$this->configHelper->set('database.id', $dbId);
 		$this->configHelper->set('database.system', 'mysql');

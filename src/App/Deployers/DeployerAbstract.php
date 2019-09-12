@@ -65,6 +65,8 @@ abstract class DeployerAbstract implements DeployInterface
 
 	protected $steps = [];
 
+	protected $isNewDbInstance;
+
 	/**
 	 * @var Client
 	 */
@@ -87,13 +89,15 @@ abstract class DeployerAbstract implements DeployInterface
 	/**
 	 * @param string $appPath
 	 * @param bool $isFirstDeploy
+	 * @param bool $isNewDbInstance
 	 * @throws Exception
 	 * @throws GuzzleException
 	 */
-	public function deployApp(string $appPath, bool $isFirstDeploy)
+	public function deployApp(string $appPath, bool $isFirstDeploy, bool $isNewDbInstance)
 	{
 		$this->appPath = $appPath;
 		$this->isFirstDeploy = $isFirstDeploy;
+		$this->isNewDbInstance = $isNewDbInstance;
 		$this->releaseFolder = DeployHelper::RELEASE_FOLDER . '/' . $this->config['release'] . '/';
 		if ($this->isFirstDeploy) {
 			$this->initApp($this->config['app']['id']);
