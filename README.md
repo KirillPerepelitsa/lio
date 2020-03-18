@@ -624,6 +624,8 @@ Composer scripts
 * `no_migrations` ***(bool)*** Is need to run migrations, default TRUE
 * `retain` ***(int)*** How many old releases should be kept (Default value 10)
 
+
+
 # Examples
 
 * Example of lamp.io.yaml config for deploy with sqlite db (other values will be added during deploy process)
